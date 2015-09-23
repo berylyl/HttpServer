@@ -1,0 +1,22 @@
+#!/bin/sh
+
+JAVA_BIN=/usr/bin/java
+
+buildclasspath(){
+        for file in $1/*
+        do
+                if [ -d $file ]; then
+                        buildclasspath $file
+                elif [ -f $file ]; then
+                        if [ `basename $file` != `basename $file .jar` -o `basename $file` != `basename $file .zip` ]; then
+                                echo -n "$file:" 
+                        fi
+                fi
+        done
+}
+if [ -z "$APP_CLASSPATH" ]; then
+       APP_CLASSPATH=`buildclasspath lib`
+fi
+APP_CLASSPATH=bin/:$APP_CLASSPATH
+#echo $APP_CLASSPATH
+$JAVA_BIN -classpath $APP_CLASSPATH Administration.AdminServer $*
